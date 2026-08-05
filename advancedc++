@@ -1,0 +1,96 @@
+#include <iostream>
+#include <cmath>     // For abs()
+#include <cstdlib>   // For exit()
+
+using namespace std;
+
+// 1. MUST BE AT THE TOP: Global helper function defined before the class
+int find_gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// 2. THE CLASS DEFINITION
+class Rational {
+private:
+    int num;
+    int den;
+
+    void simplify() {
+        if (den == 0) {
+            cerr << "Error: Denominator cannot be zero." << endl;
+            exit(1);
+        }
+        if (den < 0) {
+            num = -num;
+            den = -den;
+        }
+        // This will now work because find_gcd is defined above
+        int common_divisor = find_gcd(abs(num), den);
+        num /= common_divisor;
+        den /= common_divisor;
+    }
+
+public:
+    Rational(int n = 0, int d = 1) : num(n), den(d) {
+        simplify();
+    }
+
+    Rational operator+(const Rational& other) const {
+        int n = (num * other.den) + (other.num * den);
+        int d = den * other.den;
+        return Rational(n, d);
+    }
+
+    Rational operator-(const Rational& other) const {
+        int n = (num * other.den) - (other.num * den);
+        int d = den * other.den;
+        return Rational(n, d);
+    }
+
+    Rational operator*(const Rational& other) const {
+        int n = num * other.num;
+        int d = den * other.den;
+        return Rational(n, d);
+    }
+
+    Rational operator/(const Rational& other) const {
+        int n = num * other.den;
+        int d = den * other.num;
+        return Rational(n, d);
+    }
+
+    void display() const {
+        if (den == 1) {
+            cout << num;
+        } else {
+            cout << num << "/" << den;
+        }
+    }
+};
+
+// 3. MAIN DRIVER FUNCTION
+int main() {
+    Rational r1(2, 4);
+    Rational r2(2, 3);
+
+    Rational result_add = r1 + r2;
+    Rational result_sub = r1 - r2;
+    Rational r_mul = r1 * r2;
+    Rational result_div = r1 / r2;
+
+    cout << "r1 = "; r1.display(); cout << "\n";
+    cout << "r2 = "; r2.display(); cout << "\n\n";
+
+    cout << "Addition (r1 + r2)        = "; result_add.display(); cout << "\n";
+    cout << "Subtraction (r1 - r2)     = "; result_sub.display(); cout << "\n";
+    cout << "Multiplication (r1 * r2)  = "; r_mul.display(); cout << "\n";
+    cout << "Division (r1 / r2)        = "; result_div.display(); cout << "\n";
+
+    return 0;
+}
+
