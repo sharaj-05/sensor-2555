@@ -1,0 +1,25 @@
+
+Code for Sound Sensor with Arduino 
+
+
+void loop() {
+int sensorData = digitalRead(sensorPin); // Read Sound sensor
+if (sensorData == LOW) { 	// If pin goes LOW, sound is detected
+    // If 25ms have passed since last LOW state, it means that
+    // the clap is detected and not due to any spurious sounds
+    if (millis() - lastEvent > 25) {
+      Serial.println("Clap detected!");
+    }
+    // Remember when last event happened
+    lastEvent = millis();
+  }	}
+
+#define sensorPin 8
+// Variable to store the time when last event happened
+unsigned long lastEvent = 0;
+void setup() {
+  pinMode(sensorPin, INPUT);  // Set sensor pin as an INPUT
+  Serial.begin(9600);
+}
+
+-Vaishnu Devi M, III ECE
